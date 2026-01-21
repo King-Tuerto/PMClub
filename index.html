@@ -199,10 +199,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // Initialize Supabase
     const SUPABASE_URL = 'https://qvnrejblkupimkltukcl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2bnJlamJsa3VwaW1rbHR1a2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NTY0MTksImV4cCI6MjA4NDUzMjQxOX0.M-RKeuMaA-e4BLc5I5dkt8Su-gWWzep7-B-KLyZctPE';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function handleSubmit() {
         const name = document.getElementById('name').value;
@@ -217,8 +216,7 @@
             return;
         }
 
-        // Save to Supabase
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('rsvps')
             .insert([
                 { 
@@ -232,16 +230,14 @@
             ]);
 
         if (error) {
-            console.error('Error saving RSVP:', error);
-            alert('There was an error saving your RSVP. Please try again.');
+            console.error('Error:', error);
+            alert('There was an error. Please try again.');
             return;
         }
 
-        // Show success message
         document.getElementById('rsvp-form').classList.add('hidden');
         document.getElementById('success-message').classList.remove('hidden');
 
-        // Reset after 3 seconds
         setTimeout(() => {
             document.getElementById('rsvp-form').classList.remove('hidden');
             document.getElementById('success-message').classList.add('hidden');
