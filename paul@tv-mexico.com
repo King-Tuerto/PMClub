@@ -197,39 +197,62 @@
         </div>
     </div>
 
-    <script>
-        function handleSubmit() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const attendeeType = document.getElementById('attendeeType').value;
-            const hearAbout = document.getElementById('hearAbout').value;
-            const smsOptIn = document.getElementById('smsOptIn').checked;
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // Initialize Supabase
+    const SUPABASE_URL = 'https://qvnrejblkupimkltukcl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2bnJlamJsa3VwaW1rbHR1a2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NTY0MTksImV4cCI6MjA4NDUzMjQxOX0.M-RKeuMaA-e4BLc5I5dkt8Su-gWWzep7-B-KLyZctPE';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            if (!name || !email || !phone || !attendeeType || !hearAbout) {
-                alert('Please fill in all required fields');
-                return;
-            }
+    async function handleSubmit() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const attendeeType = document.getElementById('attendeeType').value;
+        const hearAbout = document.getElementById('hearAbout').value;
+        const smsOptIn = document.getElementById('smsOptIn').checked;
 
-            // Log the data (will be replaced with Supabase integration)
-            console.log('RSVP Data:', { name, email, phone, attendeeType, hearAbout, smsOptIn });
-
-            // Show success message
-            document.getElementById('rsvp-form').classList.add('hidden');
-            document.getElementById('success-message').classList.remove('hidden');
-
-            // Reset after 3 seconds
-            setTimeout(() => {
-                document.getElementById('rsvp-form').classList.remove('hidden');
-                document.getElementById('success-message').classList.add('hidden');
-                document.getElementById('name').value = '';
-                document.getElementById('email').value = '';
-                document.getElementById('phone').value = '';
-                document.getElementById('attendeeType').value = '';
-                document.getElementById('hearAbout').value = '';
-                document.getElementById('smsOptIn').checked = false;
-            }, 3000);
+        if (!name || !email || !phone || !attendeeType || !hearAbout) {
+            alert('Please fill in all required fields');
+            return;
         }
-    </script>
+
+        // Save to Supabase
+        const { data, error } = await supabase
+            .from('rsvps')
+            .insert([
+                { 
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    attendee_type: attendeeType,
+                    hear_about: hearAbout,
+                    sms_opt_in: smsOptIn
+                }
+            ]);
+
+        if (error) {
+            console.error('Error saving RSVP:', error);
+            alert('There was an error saving your RSVP. Please try again.');
+            return;
+        }
+
+        // Show success message
+        document.getElementById('rsvp-form').classList.add('hidden');
+        document.getElementById('success-message').classList.remove('hidden');
+
+        // Reset after 3 seconds
+        setTimeout(() => {
+            document.getElementById('rsvp-form').classList.remove('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('attendeeType').value = '';
+            document.getElementById('hearAbout').value = '';
+            document.getElementById('smsOptIn').checked = false;
+        }, 3000);
+    }
+</script>
 </body>
 </html>
