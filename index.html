@@ -230,10 +230,14 @@
             ]);
 
         if (error) {
-            console.error('Error:', error);
-            alert('There was an error. Please try again.');
-            return;
-        }
+    console.error('Error:', error);
+    if (error.code === '23505') {
+        alert('This email has already been registered for the event!');
+    } else {
+        alert('There was an error. Please try again.');
+    }
+    return;
+}
 
         document.getElementById('rsvp-form').classList.add('hidden');
         document.getElementById('success-message').classList.remove('hidden');
